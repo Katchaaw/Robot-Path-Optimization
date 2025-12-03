@@ -18,6 +18,7 @@ public class Main {
      */
     public static void main(String[] args){
         String file = "instances/instance1.txt";
+
         if (args.length > 0) {
             file = args[0];
         }
@@ -32,8 +33,20 @@ public class Main {
                 }
 
                 Instance i = new Instance(M,N,sc);
-                //Solver.solve(i);
+                Solver.Result res = Solver.solve(i);
+                if(res.time == -1) {
+                    System.out.println(-1);
+                }
+                else {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(res.time);
+                    for(String a : res.actions) {
+                        sb.append(" ").append(a);
+                    }
+                    System.out.println(sb.toString());
+                }
             }
+            sc.close();
         }
         catch(FileNotFoundException e){
             e.printStackTrace();
