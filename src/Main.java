@@ -26,8 +26,8 @@ public class Main {
         try{
             Scanner sc = new Scanner(new File(file));
             while (true){
-                int N = sc.nextInt();
                 int M = sc.nextInt();
+                int N = sc.nextInt();
                 if(N == 0 || M == 0){
                     break;
                 }

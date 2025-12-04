@@ -37,12 +37,22 @@ public class Instance {
      * @param sc scanner des données
      */
     public Instance(int M, int N, Scanner sc){
-        this.M = M;
-        this.N = N;
-        this.grid = new int[M][N];
+        System.out.println(M);
+        System.out.println(N);
+        this.M = M+1;
+        this.N = N+1;
+        this.grid = new int[M+1][N+1];
         for (int i = 0; i < M; i++){
             for (int j = 0; j < N; j++){
-                grid[i][j] = sc.nextInt();
+                int tmp = sc.nextInt();
+                if(tmp == 1){
+                    System.out.println(i);
+                    System.out.println(j);
+                    this.grid[i][j] = 1;
+                    this.grid[i][j+1] = 1;
+                    this.grid[i+1][j] = 1;
+                    this.grid[i+1][j+1] = 1;
+                }
             }
         }
         this.D1 = sc.nextInt();
@@ -67,4 +77,5 @@ public class Instance {
             default -> -1;
         };
     }
+
 }

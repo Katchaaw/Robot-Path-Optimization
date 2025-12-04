@@ -28,9 +28,8 @@ public class Solver {
     private static boolean isValid(Instance inst, int i, int j) {
         int M = inst.M;
         int N = inst.N;
-        if (i < 0 || i >= M-1 || j < 0 || j >= N-1) return false;
-        return inst.grid[i][j] == 0 && inst.grid[i+1][j] == 0 &&
-                inst.grid[i][j+1] == 0 && inst.grid[i+1][j+1] == 0;
+        return !(i <= 0 || i >= M-1 || j <= 0 || j >= N-1 || inst.grid[i][j] == 1);
+
     }
 
     /**
@@ -74,7 +73,8 @@ public class Solver {
         if (!isValid(inst, start_i, start_j) || !isValid(inst, final_i, final_j))
             return new Result(-1, null);
 
-        boolean[][][] visited = new boolean[M-1][N-1][4];
+
+        boolean[][][] visited = new boolean[M][N][4];
         Queue<State> q = new LinkedList<>();
         State start = new State(start_i, start_j, start_d, 0, null, null);
         q.add(start);
@@ -96,9 +96,9 @@ public class Solver {
                 break;
             }
 
-            // Sens horaire (+1 = droite, +3 = gauche)
-            int dRight = (curr.dir + 1) % 4;
-            int dLeft  = (curr.dir + 3) % 4;
+            // Sens antihoraire (+1 = gauche, +3 = droite)
+            int dRight = (curr.dir + 3) % 4;
+            int dLeft  = (curr.dir + 1) % 4;
 
             // Tourne à droite (D)
             if (!visited[curr.r][curr.c][dRight]){
