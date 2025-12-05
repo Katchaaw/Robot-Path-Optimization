@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -17,40 +19,11 @@ public class Main {
      * @param args : chemin du fichier d'instances (optionnel)
      */
     public static void main(String[] args){
-        String file = "instances/instance1.txt";
+        SolverStats.csv_stats_solver_10_50();
+        SolverStats.csv_stats_solver_obstables_10_50();
 
-        if (args.length > 0) {
-            file = args[0];
-        }
 
-        try{
-            Scanner sc = new Scanner(new File(file));
-            while (true){
-                int M = sc.nextInt();
-                int N = sc.nextInt();
-                if(N == 0 || M == 0){
-                    break;
-                }
 
-                Instance i = new Instance(M,N,sc);
-                Solver.Result res = Solver.solve(i);
-                if(res.time == -1) {
-                    System.out.println(-1);
-                }
-                else {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(res.time);
-                    for(String a : res.actions) {
-                        sb.append(" ").append(a);
-                    }
-                    System.out.println(sb.toString());
-                }
-            }
-            sc.close();
-        }
-        catch(FileNotFoundException e){
-            e.printStackTrace();
-        }
     }
 
 }

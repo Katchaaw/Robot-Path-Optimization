@@ -1,5 +1,9 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Scanner;
 
 /**
  * Contient l'algorithme de résolution du problème.
@@ -86,13 +90,13 @@ public class Solver {
             State curr = q.poll();
 
             // Print de l'état courant
-            System.out.printf("Exploration: (%d,%d) dir=%d time=%d\n", curr.r, curr.c, curr.dir, curr.time);
+            //System.out.printf("Exploration: (%d,%d) dir=%d time=%d\n", curr.r, curr.c, curr.dir, curr.time);
 
 
             // Si on atteint la position finale : on est optimal grâce au BFS
             if(curr.r == final_i && curr.c == final_j) {
                 goalState = curr;
-                System.out.println("Goal atteint!");
+                //System.out.println("Goal atteint!");
                 break;
             }
 
@@ -104,14 +108,14 @@ public class Solver {
             if (!visited[curr.r][curr.c][dRight]){
                 visited[curr.r][curr.c][dRight] = true;
                 q.add(new State(curr.r, curr.c, dRight, curr.time + 1, curr, "D"));
-                System.out.printf("  Turn D -> dir=%d\n", dRight);
+                //System.out.printf("  Turn D -> dir=%d\n", dRight);
            }
 
             // Tourne à gauche (G)
             if (!visited[curr.r][curr.c][dLeft]){
                 visited[curr.r][curr.c][dLeft] = true;
                 q.add(new State(curr.r, curr.c, dLeft, curr.time + 1, curr, "G"));
-                System.out.printf("  Turn G -> dir=%d\n", dLeft);
+                //System.out.printf("  Turn G -> dir=%d\n", dLeft);
             }
 
             // Avance n (n = 1..3) : pour chaque n, on vérifie que chaque position intermédiaire est valide
@@ -125,10 +129,10 @@ public class Solver {
                     ni += dr[curr.dir];
                     nj += dc[curr.dir];
 
-                    System.out.printf("    Check step %d à (%d,%d)\n", k, ni, nj);
+                    //System.out.printf("    Check step %d à (%d,%d)\n", k, ni, nj);
                     if (!isValid(inst, ni, nj)) {
                         ok = false;
-                        System.out.printf("      Bloqué en (%d,%d)\n", ni, nj);
+                        //System.out.printf("      Bloqué en (%d,%d)\n", ni, nj);
                         break;
                     }
                 }
@@ -136,7 +140,10 @@ public class Solver {
                 if(ok && !visited[ni][nj][curr.dir]) {
                     visited[ni][nj][curr.dir] = true;
                     q.add(new State(ni, nj, curr.dir, curr.time + 1, curr, "a" + n));
-                    System.out.printf("    Move a%d en (%d,%d)\n", n, ni, nj);
+                    //System.out.printf("    Move a%d en (%d,%d)\n", n, ni, nj);
+                }
+                else{
+                    break;
                 }
             }
         }
@@ -152,6 +159,48 @@ public class Solver {
         }
 
         return new Result(goalState.time, actions);
+    }
+
+    public static double solve(int []M_tab,int []N_tab, String file, String res_file, boolean random, int[] nbObstacle){
+        if(random){
+            Instance.generate_random_grid_file(M_tab,N_tab,file, nbObstacle);
+        }
+        try{
+            Scanner sc = new Scanner(new File(file));
+            FileWriter f = new FileWriter(res_file);
+            double sum_ms = 0;
+            while (true){
+                int M = sc.nextInt();
+                int N = sc.nextInt();
+                if(N == 0 || M == 0){
+                    break;
+                }
+
+                Instance i = new Instance(M,N,sc);
+                long start = System.nanoTime();
+                Solver.Result res = Solver.solve(i);
+                long end = System.nanoTime();
+                sum_ms += (end - start)/1000000.0;
+                if(res.time == -1) {
+                    f.write("-1\n");
+                }
+                else {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(res.time);
+                    for(String a : res.actions) {
+                        sb.append(" ").append(a);
+                    }
+                    f.write(sb.toString() + "\n");
+                }
+            }
+            f.close();
+            sc.close();
+            return sum_ms/M_tab.length;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
 }
