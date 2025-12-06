@@ -1,7 +1,10 @@
+import com.gurobi.gurobi.*;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -166,6 +169,94 @@ public class Instance {
 
             generate_file(grid,D1,D2,F1,F2,startDir,fileName, (k == nbGrid-1));
         }
+    }
+
+    private static int[][] generate_weighted_grid(int M, int N){
+        int [][]grid = new int[M][N];
+        Random r = new Random();
+        for(int i = 0; i < M; i++){
+            for(int j = 0; j < N; j++){
+                grid[i][j] = r.nextInt(1001);
+            }
+        }
+        return grid;
+    }
+
+    public static void generate_random_grid_constrained_obs_pos(int M, int N, int P, int D1, int D2, int F1, int F2, int startDir) throws GRBException {
+        int [][] weighted_grid = generate_weighted_grid(M,N);
+        GRBEnv env = new GRBEnv(true);
+        env.set("logFile", "grid_optimization.log");
+        env.start();
+        GRBModel model = new GRBModel(env);
+        GRBVar [][] vars = new GRBVar[M][N];
+        GRBLinExpr nbObst = new GRBLinExpr();
+        GRBLinExpr obj = new GRBLinExpr();
+        for(int i = 0; i < M; i++){
+            for(int j = 0; j < N; j++){
+                vars[i][j] = model.addVar(0.0,1.0,0.0, GRB.BINARY, "p_" + String.valueOf(i) + "_" + String.valueOf(j));
+                nbObst.addTerm(1.0,vars[i][j]);
+                obj.addTerm(weighted_grid[i][j],vars[i][j]);
+            }
+        }
+        model.addConstr(nbObst,GRB.EQUAL,P,"nbObstacles");
+        model.setObjective(obj,GRB.MINIMIZE);
+        for(int i = 0; i < M; i ++){
+            GRBLinExpr line_obst_lim = new GRBLinExpr();
+            double []ones = new double[N];
+            Arrays.fill(ones,1.0);
+            line_obst_lim.addTerms(ones,vars[i]);
+            model.addConstr(line_obst_lim,GRB.LESS_EQUAL, (double) (2 * P) / M, "line_" + String.valueOf(i) + "_obstLim");
+
+            for(int j = 1; j < N-1; j++){
+                GRBLinExpr one_zero_one_seq_line = new GRBLinExpr();
+                double[] coeffs = new double[]{1,-1,-1};
+                GRBVar[] sequence = new GRBVar[]{vars[i][j], vars[i][j-1], vars[i][j+1]};
+                one_zero_one_seq_line.addTerms(coeffs,sequence);
+                model.addConstr(one_zero_one_seq_line,GRB.GREATER_EQUAL,-1,"L101_" + String.valueOf(i) + "_" + String.valueOf(j));
+            }
+        }
+        for(int j  = 0; j < N; j++){
+            GRBLinExpr col_obst_lim = new GRBLinExpr();
+            for(int i = 0; i < M; i++){
+                if(i != 0 && i != M-1){
+                    GRBLinExpr one_zero_one_seq_col = new GRBLinExpr();
+                    double[] coeffs = new double[]{1,-1,-1};
+                    GRBVar[] sequence = new GRBVar[]{vars[i][j], vars[i-1][j], vars[i+1][j]};
+                    one_zero_one_seq_col.addTerms(coeffs,sequence);
+                    model.addConstr(one_zero_one_seq_col,GRB.GREATER_EQUAL,-1,"C101_" + String.valueOf(i) + "_" + String.valueOf(j));
+                }
+                col_obst_lim.addTerm(1, vars[i][j]);
+            }
+            model.addConstr(col_obst_lim,GRB.LESS_EQUAL, (double) (2 * P) / N, "col_" + String.valueOf(j) + "_obstLim");
+
+        }
+        model.optimize();
+
+        int[][] resultGrid = new int[M][N];
+
+        int optimStatus = model.get(GRB.IntAttr.Status);
+
+        if (optimStatus == GRB.OPTIMAL) {
+            for(int i = 0; i < M; i++){
+                for(int j = 0; j < N; j++){
+                    double val = vars[i][j].get(GRB.DoubleAttr.X);
+
+                    if (val > 0.5) {
+                        resultGrid[i][j] = 1;
+                    } else {
+                        resultGrid[i][j] = 0;
+                    }
+                }
+            }
+        } else {
+            System.out.println("Aucune solution trouvée (Infeasible ou Unbounded).");
+            return;
+        }
+
+        model.dispose();
+        env.dispose();
+
+        generate_file(resultGrid,D1,D2,F1,F2,startDir,"constrained_obst_random",true);
     }
 
 }
