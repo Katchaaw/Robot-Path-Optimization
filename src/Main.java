@@ -74,7 +74,7 @@ public class Main {
             int[] M_tab = new int[]{M};
             int[] N_tab = new int[]{N};
             int[] nbObstacles = new int []{P};
-            Solver.solve(M_tab,N_tab,"constrained_obst_random","res_constrained_obst_random",false,nbObstacles);
+            Solver.solve(M_tab,N_tab,"instances/constrained_obst_random","instances/res_constrained_obst_random",false,nbObstacles);
         }
         catch (GRBException e) {
             throw new RuntimeException(e);
