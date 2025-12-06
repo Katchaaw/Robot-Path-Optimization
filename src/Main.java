@@ -1,4 +1,4 @@
-import com.gurobi.gurobi.GRBException;
+import gurobi.*;
 
 import java.util.Scanner;
 

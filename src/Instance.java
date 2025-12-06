@@ -1,4 +1,4 @@
-import com.gurobi.gurobi.*;
+import gurobi.*;
 
 import java.io.File;
 import java.io.FileWriter;
