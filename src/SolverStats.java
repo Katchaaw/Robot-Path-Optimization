@@ -1,6 +1,5 @@
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class SolverStats {
@@ -41,7 +40,7 @@ public class SolverStats {
         }
     }
 
-    public static void csv_stats_solver_obstables_10_50(){
+    public static void csv_stats_solver_obstacles_10_50(){
         try (FileWriter writer = new FileWriter("Performance_tests/csv_files/stats_10-50.csv")) {
             writer.write("N duration(ms)\n");
             for(int i = 1; i < 6; i++){

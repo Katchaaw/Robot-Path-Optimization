@@ -1,9 +1,3 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
-
 /**
  * Point d’entrée du programme.
  *
@@ -20,7 +14,7 @@ public class Main {
      */
     public static void main(String[] args){
         SolverStats.csv_stats_solver_10_50();
-        SolverStats.csv_stats_solver_obstables_10_50();
+        SolverStats.csv_stats_solver_obstacles_10_50();
 
 
 
