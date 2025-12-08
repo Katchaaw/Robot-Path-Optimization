@@ -339,7 +339,7 @@ public class Instance {
         model.dispose();
         env.dispose();
 
-        generate_file(resultGrid,D1,D2,F1,F2,startDir,"constrained_obst_random",true);
+        generate_file(resultGrid,D1,D2,F1,F2,startDir,"instances/constrained_obst_random",true);
     }
 
 }
