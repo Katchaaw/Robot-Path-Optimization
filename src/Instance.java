@@ -339,7 +339,12 @@ public class Instance {
         model.dispose();
         env.dispose();
 
-        generate_file(resultGrid,D1,D2,F1,F2,startDir,"instances/constrained_obst_random",true);
+        String fileName = "instances/constrained_obst_random";
+        File f = new File(fileName);
+        if(f.exists()){
+            f.delete();
+        }
+        generate_file(resultGrid,D1,D2,F1,F2,startDir,fileName,true);
     }
 
 }
