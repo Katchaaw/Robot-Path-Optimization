@@ -7,6 +7,12 @@ import java.util.Scanner;
  *
  * <p>Charge une ou plusieurs instances depuis un fichier texte, puis crée
  * un objet {@link Instance} pour chacune.</p>
+ *
+ * <p>
+ * Ce main propose également (en commentaires) l'exécution de tests de performance :
+ * {@link SolverStats#csv_stats_solver_10_50()} et
+ * {@link SolverStats#csv_stats_solver_obstacles_10_50()}.
+ * </p>
  */
 public class Main {
 
@@ -71,9 +77,11 @@ public class Main {
 
         try{
             Instance.generate_random_grid_constrained_obs_pos(M,N,P,D1,D2,F1,F2,startDir);
+
             int[] M_tab = new int[]{M};
             int[] N_tab = new int[]{N};
             int[] nbObstacles = new int []{P};
+
             Solver.solve(M_tab,N_tab,"instances/constrained_obst_random","instances/res_constrained_obst_random",false,nbObstacles);
         }
         catch (GRBException e) {

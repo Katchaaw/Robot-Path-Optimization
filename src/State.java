@@ -7,8 +7,15 @@
  *     <li>parent : état précédent (pour reconstruire le chemin)</li>
  *     <li>action : nom de l'action effectuée depuis le parent</li>
  * </ul>
+ *
+ * <p>
+ * Comme on est dans un graphe où chaque action coûte 1,
+ * l'attribut {@code time} correspond directement à la distance
+ * dans le graphe d'états (nombre minimal d'actions).
+ * </p>
  */
 public class State {
+
     /** Ligne (resp. colonne) actuelle. */
     public int r,c;
 
