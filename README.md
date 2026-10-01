@@ -1,35 +1,35 @@
 # GR4_ALVES_VIEIRA_LU
-Modélisation d'une "balade" d'un robot dans un grand magasin pour le transport d'objets.
+Modeling a robot's "walk" through a department store for object transportation.
 
-## 📦 Prérequis
+## 📦 Requirements
 
 - Java 17+
-- Gurob
+- Gurobi
 
 ## Compilation
 
-Depuis la racine du projet :
+From the project root:
 
 ```java
 javac -cp ".:gurobi.jar" src/*.java
 ```
 
-Cela compile l’ensemble des fichiers Java en prenant en compte Gurobi.
+This compiles all Java files while taking Gurobi into account.
 
-## 🚀 Exécution
+## 🚀 Execution
 
-Toujours depuis la racine :
+Still from the project root:
 ```java
 java -cp "src:.:gurobi.jar" Main
 ```
 
-Le programme vous demandera ensuite :
+The program will then ask you for:
 
-- le nombre de lignes M
-- le nombre de colonnes N
-- le nombre d’obstacles P
-- la position de départ (D1, D2)
-- l’orientation initiale (0=EST, 1=NORD, 2=OUEST, 3=SUD)
-- la position d’arrivée (F1, F2)
+- the number of rows M
+- the number of columns N
+- the number of obstacles P
+- the starting position (D1, D2)
+- the initial orientation (0=EAST, 1=NORTH, 2=WEST, 3=SOUTH)
+- the destination position (F1, F2)
 
-Il générera alors une grille satisfaisant les contraintes, puis calculera et affichera le plus court chemin.
+It will then generate a grid satisfying the constraints, and compute and display the shortest path.
